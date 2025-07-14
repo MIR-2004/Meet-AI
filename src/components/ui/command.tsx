@@ -76,6 +76,10 @@ function CommandResponsiveDialog({
 }) {
 
     const isMobile= useIsMobile();
+
+    if (isMobile){
+      
+    }
   return (
     <Dialog {...props}>
       <DialogHeader className="sr-only">
