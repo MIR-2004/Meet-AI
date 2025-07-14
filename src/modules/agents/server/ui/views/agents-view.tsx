@@ -5,6 +5,8 @@ import { useTRPC } from "@/trpc/client";
 import { LoadingState } from "@/components/loading-state";
 //import ErrorPage from "@/app/(dashboard)/agents/error";
 import { ErrorState } from "@/components/error-state";
+//import { ResponsiveDialog } from "@/components/responsive-dialog";
+//import { Button } from "@/components/ui/button";
 
 export const AgentsView = () => {
     const trpc =useTRPC();
@@ -14,6 +16,9 @@ export const AgentsView = () => {
 
     return(
         <div>
+            
+            
+            
             {JSON.stringify(data,null,2)}
         </div>
     );
