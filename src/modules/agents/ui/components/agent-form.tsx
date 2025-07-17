@@ -61,20 +61,20 @@ export const AgentForm = ({
              <GeneratedAvatar
              seed={form.watch("name")}
              className="border size-16"
-             variant ="bottsNeutral"
+             variant ="botttsNeutral"
              />
 
              <FormField
              name="name"
              control={form.control}
-             render ={({ field }) => {
+             render={({ field }) => (
                 <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                         <Input { ...field } />
                     </FormControl>
                 </FormItem>
-             }}
+                )}
              />
             </form>
         </Form>
