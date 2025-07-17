@@ -12,8 +12,6 @@ export const AgentsView = () => {
     const trpc =useTRPC();
     const { data } = useQuery(trpc.agents.getMany.queryOptions());
 
-    
-
     return(
         <div>
             {JSON.stringify(data,null,2)}
