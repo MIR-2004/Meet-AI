@@ -1,11 +1,11 @@
-import { z } from 'zod';
 
-import { agenysRouter } from '@/modules/agents/server/procedures';
+
+import { agentsRouter } from '@/modules/agents/server/procedures';
 
 import {  createTRPCRouter } from '../init';
 
 export const appRouter = createTRPCRouter({
-  agents: agenysRouter
+  agents: agentsRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;
