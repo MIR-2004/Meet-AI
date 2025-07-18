@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-
+import { NuqsAdapter } from "nuqs/adapters/next";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "sonner";
+import "./globals.css";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -21,7 +21,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
+    <NuqsAdapter>
     <TRPCReactProvider>
     <html lang="en">
       <body
@@ -32,5 +34,6 @@ export default function RootLayout({
       </body>
     </html>
     </TRPCReactProvider>
+    </NuqsAdapter>
   );
 }
