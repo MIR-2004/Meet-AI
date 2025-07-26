@@ -14,7 +14,7 @@ import { useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-qu
 import { toast } from "sonner";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useState } from "react";
-import { UpdateAgentDialog } from "../components/update-agent-dialog";
+import { UpdateAgentDialog } from "../components/Update-agent-dialog";
 interface Props {
     agentId: string;
 };

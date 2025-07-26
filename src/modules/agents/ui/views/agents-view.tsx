@@ -59,5 +59,5 @@ export const AgentsViewError = () => {
           title="Error Loading Agents"
           description="Something went wrong"
         />
-    )
-}
+    );
+};
