@@ -46,7 +46,7 @@ The application follows a **3-tier architecture**:
 #### Backend
 1. Clone the repository and navigate to the backend folder:
    ```bash
-   git clone https://github.com/farhan0001/Lavishta-Nest.git
+   git clone https://github.com/.git
    cd Lavishta
    ```
 2. Install dependencies:
@@ -55,7 +55,7 @@ The application follows a **3-tier architecture**:
    ```
 3. Configure environment variables in a `/backend/config/config.env` file:
    ```env
-    DATABASE_URL="postgresql://meet-ai_owner:npg_HGZ3yEVYmN9e@ep-purple-flower-a4otqvfw-pooler.us-east-1.aws.neon.tech/meet-ai?sslmode=require&channel_binding=require"
+    DATABASE_URL=<Your_DB_URL>
    BETTER_AUTH_SECRET=<Your_Better_Auth_Secret>
    BETTER_AUTH_URL=<Your_Better_Auth_URL>
    GITHUB_CLIENT_ID=<Your_Github_Client_Secret_Key>
@@ -80,4 +80,4 @@ The application follows a **3-tier architecture**:
 5. **Order History**: View your past orders in the user dashboard.
 
 ## Contact
-- **Email**: farhanquamar2021@gmail.com
+- **Email**: mir.saif.ali2004@gmail.com
