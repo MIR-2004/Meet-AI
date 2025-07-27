@@ -3,13 +3,13 @@ import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { agents } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { agentsInsertSchema, agentUpdateSchema } from "../schemas";
+import { agentsInsertSchema, agentsUpdateSchema } from "../schemas";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { TRPCError } from "@trpc/server";
 
 export const agentsRouter = createTRPCRouter ({
    update: protectedProcedure
-       .input(agentUpdateSchema)
+       .input(agentsUpdateSchema)
        .mutation(async ({ ctx, input }) =>{
           const [updatedAgent] = await db 
                .update(agents)
