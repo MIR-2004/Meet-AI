@@ -48,7 +48,7 @@ export const useConfirm = (
                     Cancel
                 </Button>
                 <Button
-                onClick={handleCancel}
+                onClick={handleConfirm}
                      className="w-full lg:w-auto"
                      >
                     Confirm
