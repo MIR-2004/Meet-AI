@@ -1,7 +1,5 @@
 "use client" ;
 
-
-// import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
@@ -15,6 +13,7 @@ import { toast } from "sonner";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useState } from "react";
 import { UpdateAgentDialog } from "../components/Update-agent-dialog";
+
 interface Props {
     agentId: string;
 };
@@ -98,7 +97,7 @@ export const AgentIdViewLoading = () => {
     return(
         <LoadingState
             title="Loading Agent"
-            description="This may take a fewseconds"
+            description="This may take a few seconds"
         />
     );
 };
