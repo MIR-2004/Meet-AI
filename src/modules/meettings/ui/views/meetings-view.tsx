@@ -1,7 +1,6 @@
 "use client";
 
 import { useTRPC } from "@/trpc/client";
-
 import {  useSuspenseQuery } from "@tanstack/react-query";
 import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
@@ -43,7 +42,7 @@ return (
 export const MeetingsViewLoading = () => {
     return(
         <LoadingState
-            title="Loading Agents"
+            title="Loading Meetings"
             description="This may take a fewseconds"
         />
     );
@@ -53,7 +52,7 @@ export const MeetingsViewLoading = () => {
 export const MeetingsViewError = () => {
     return (
         <ErrorState 
-          title="Error Loading Agents"
+          title="Error Loading Meetings"
           description="Something went wrong"
         />
     );
