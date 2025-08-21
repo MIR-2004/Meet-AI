@@ -9,9 +9,21 @@ import { TRPCError } from "@trpc/server";
 import { meetingsInsertSchema, meetingsUpdateSchema } from "../schemas";
 import { MeetingStatus, StreamTranscriptItem } from "../types";
 import { streamVideo } from "@/lib/stream-video";
-import { genertateAvatarUri } from "@/lib/avatar";
+import { generateAvatarUri } from "@/lib/avatar";
+import { streamChat } from "@/lib/stream-chat";
 
 export const meetingssRouter = createTRPCRouter({
+        generateChatToken: protectedProcedure.mutation(async ({ ctx }) => {
+        const token = streamChat.createToken(ctx.auth.user.id);
+        await streamChat.upsertUsers([
+            {
+                id: ctx.auth.user.id,
+                role: "admin",
+            }
+        ]);
+        return token;
+    }),
+
     getTranscript: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -35,13 +47,13 @@ export const meetingssRouter = createTRPCRouter({
       
     const transcript = await fetch(existingMeeting.transcriptUrl)
     .then((res) => res.text())
-    .then((text) => JSON.parse<StreamTranscriptItem>(text))
+    .then((text) => JSONL.parse<StreamTranscriptItem>(text))
     .catch(() => {
         return [];
     });
 
     const speakerIds = [
-        ...new Set(transcript.map((item) => item.speakerId)),
+        ...new Set(transcript.map((item) => item.speaker_id)),
     ];
 
     const userSpeakers = await db
@@ -52,7 +64,7 @@ export const meetingssRouter = createTRPCRouter({
             users.map((user) => ({
               ...user,
               image:
-              user.image ?? genertateAvatarUri({ seed: user.name, variant: "initials" }),
+              user.image ?? generateAvatarUri({ seed: user.name, variant: "initials" }),
             }))
         );
 
@@ -63,19 +75,19 @@ export const meetingssRouter = createTRPCRouter({
         .then((agents) => 
             agents.map((agent) => ({
               ...agent,
-              image: genertateAvatarUri({ seed: agent.name, variant: "botttsNeutral" })
+              image: generateAvatarUri({ seed: agent.name, variant: "botttsNeutral" })
             }))
         );
 
         const speakers = [...userSpeakers, ...agentSpeakers];
         const transcriptWithSpeaker = transcript.map((item) => {
-            const speaker = speakers.find((speaker) => speaker.id === item.speakerId);
+            const speaker = speakers.find((speaker) => speaker.id === item.speaker_id);
             if (!speaker) {
                 return {
                     ...item,
                     user: {
                         name: "Unknown",
-                        image: genertateAvatarUri({
+                        image: generateAvatarUri({
                             seed: "Unknown",
                             variant: "initials",
                         }),
@@ -100,7 +112,7 @@ export const meetingssRouter = createTRPCRouter({
                 id: ctx.auth.user.id,
                 name: ctx.auth.user.name,
                 role: "admin",
-                image: ctx.auth.user.image ?? genertateAvatarUri({ seed: ctx.auth.user.name, variant: "initials" })
+                image: ctx.auth.user.image ?? generateAvatarUri({ seed: ctx.auth.user.name, variant: "initials" })
             }
         ]);
 
@@ -204,7 +216,7 @@ export const meetingssRouter = createTRPCRouter({
                     id: existingAgent.id,
                     name: existingAgent.name,
                     role: "user",
-                    image: genertateAvatarUri({ seed: existingAgent.name, variant: "botttsNeutral"})
+                    image: generateAvatarUri({ seed: existingAgent.name, variant: "botttsNeutral"})
                 }
             ])
 
