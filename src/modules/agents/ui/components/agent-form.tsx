@@ -18,8 +18,7 @@ import { toast } from "sonner";
 interface AgentFormProps { 
     onSuccess?: () => void;
     onCancel?: () => void;
-    initialValues?: AgentGetOne;
-    
+    initialValues?: AgentGetOne; 
 };
 
 export const AgentForm = ({ 
@@ -38,13 +37,17 @@ export const AgentForm = ({
                     trpc.agents.getMany.queryOptions({}),
                 );
 
-                
+                await queryClient.invalidateQueries(
+                    trpc.premium.getFreeUsage.queryOptions(),
+                );
                 onSuccess?.();
             },
             onError: (error) => {
                 toast.error(error.message);
 
-            // TODO: Check if error code is "FORBIDDEN" , redirect to "/upgrade"
+             if(error.data?.code === "FORBIDDEN"){
+                router.push("/upgrade");
+             }
             }, 
         }),
     );
@@ -67,8 +70,6 @@ export const AgentForm = ({
             },
             onError: (error) => {
                 toast.error(error.message);
-
-            // TODO: Check if error code is "FORBIDDEN" , redirect to "/upgrade"
             }, 
         }),
     );
