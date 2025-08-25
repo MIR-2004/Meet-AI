@@ -1,5 +1,5 @@
 import { authClient } from "@/lib/auth-client";
-import { genertateAvatarUri } from "@/lib/avatar";
+import { generateAvatarUri } from "@/lib/avatar";
 import {
   DefaultVideoPlaceholder,
   StreamVideoParticipant,
@@ -28,7 +28,7 @@ const DisabledVideoPreview = () => {
           name: data?.user.name ?? "",
           image:
             data?.user.image ??
-            genertateAvatarUri({
+            generateAvatarUri({
               seed: data?.user.name ?? "",
               variant: "initials",
             }),

@@ -29,7 +29,9 @@ export const AgentIdview = ({ agentId }: Props) => {
         trpc.agents.remove.mutationOptions({
          onSuccess: async () => {
           await  queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
-              //todo : invalidate free tier usage
+                await queryClient.invalidateQueries(
+                    trpc.premium.getFreeUsage.queryOptions(),
+                );
               router.push("/agents");
          },
           onError: (error) =>{
@@ -40,7 +42,7 @@ export const AgentIdview = ({ agentId }: Props) => {
 
     const [RemoveConfirmation, confirmRemove] = useConfirm(
         "Are You Sure?" ,
-       `The following action will remove ${data.meetingCount} associated meetings`,
+       `The following action will remove ${data.meeetingCount} associated meetings`,
     );
 
     const handleRemoveAgent = async () => {
@@ -79,7 +81,7 @@ export const AgentIdview = ({ agentId }: Props) => {
                         className="flex items-center gap-x-2 [&>svg]:size-4"
                         >
                           <VideoIcon className="text-blue-700"/>
-                          {data.meetingCount} {data.meetingCount === 1 ? "meeting" : "meetings"}
+                          {data.meeetingCount} {data.meeetingCount === 1 ? "meeting" : "meetings"}
                         </Badge>
                             <div className="flex flex-col gap-y-4 ">
                                 <p className="text-lg font-medium ">Instructions</p>

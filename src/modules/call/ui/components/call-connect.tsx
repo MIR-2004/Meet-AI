@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2Icon, LoaderIcon } from "lucide-react";
+import { Loader2Icon} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { useTRPC } from "@/trpc/client";
