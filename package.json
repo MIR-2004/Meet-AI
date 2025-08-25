@@ -9,7 +9,7 @@
     "lint": "next lint",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev:webhook": "ngrok http --url=joey-learning-firstly.ngrok-free.app 3000"
+    "dev:webhook": "ngrok http --url=frank-newt-amused.ngrok-free.app 3000"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.3",
