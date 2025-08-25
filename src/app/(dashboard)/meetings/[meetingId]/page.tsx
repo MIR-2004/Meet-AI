@@ -29,6 +29,7 @@ const Page = async ({ params}: Props) => {
         trpc.meetings.getOne.queryOptions({id: meetingId }),
     );
     
+    
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
           <Suspense fallback={<MeetingIdViewLoading/>}>

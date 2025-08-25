@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaGithub} from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import Image from "next/image";
 
 
 
@@ -237,7 +238,7 @@ const SignUpView = () => {
             </form>
           </Form>
           <div className="bg-radial from-sidebar-accent to-sidebar relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-            <img src="/logo.svg" alt="Image" className="h-[92px] w-[92px]" />
+            <Image src="/logo.svg" alt="Image" className="h-[92px] w-[92px]" />
             <p className="text-2xl font-semibold text-white">Meet.AI</p>
           </div>
         </CardContent>
