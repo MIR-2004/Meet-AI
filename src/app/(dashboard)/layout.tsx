@@ -10,7 +10,7 @@ const layout = ({children}: Props) => {
   return (
     <SidebarProvider>
         <DashboardSideber/>
-        <main className="flex flex-col h-screen w-screen bg-muted">
+        <main className="flex flex-col w-screen bg-muted">
           <DashboardNavbar/>
         {children}
         </main>
@@ -18,4 +18,4 @@ const layout = ({children}: Props) => {
   );
 };
 
-export default layout
+export default layout;
