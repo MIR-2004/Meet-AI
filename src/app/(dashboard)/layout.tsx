@@ -1,12 +1,23 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardNavbar from "@/modules/dashboard/ui/components/dashboard-navbar";
 import DashboardSideber from "@/modules/dashboard/ui/components/dashboard-sidebar";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+
 
 interface Props {
     children: React.ReactNode;
 }
 
-const layout = ({children}: Props) => {
+const layout = async({children}: Props) => {
+    const session = await auth.api.getSession({
+      headers:  await headers(),
+    });
+  
+    if (!session) {
+      redirect("/auth/sign-in");
+    }
   return (
     <SidebarProvider>
         <DashboardSideber/>
