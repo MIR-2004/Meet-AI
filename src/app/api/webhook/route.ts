@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import {and, eq, not} from "drizzle-orm";
+import {and, eq} from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { MessageNewEvent, CallEndedEvent, CallTranscriptionReadyEvent, CallSessionParticipantLeftEvent, CallRecordingReadyEvent, CallSessionStartedEvent } from "@stream-io/node-sdk";
@@ -52,21 +52,15 @@ export async function POST(req:NextRequest) {
 
         const [existingMeeting] = await db.select()
         .from(meetings)
-        .where(
-            and(
-                eq(meetings.id, meetingId),
-                not(eq(meetings.status, "completed")),
-                not(eq(meetings.status, "active")),
-                not(eq(meetings.status, "cancelled")),
-                not(eq(meetings.status, "processing")),
-            )
-        )
+        .where(eq(meetings.id, meetingId))
 
         if(!existingMeeting){
             return NextResponse.json({error: "Meeting not found"}, {status: 404})
         }
 
-        await db.update(meetings).set({status: "active", startedAt: new Date()}).where(eq(meetings.id, existingMeeting.id))
+        if (existingMeeting.status !== "active") {
+            await db.update(meetings).set({status: "active", startedAt: new Date()}).where(eq(meetings.id, existingMeeting.id))
+        }
 
         const [existingAgent] = await db.select().from(agents).where(eq(agents.id, existingMeeting.agentId))
     
@@ -74,16 +68,21 @@ export async function POST(req:NextRequest) {
             return NextResponse.json({error: "Agent is not found"}, {status: 404})
         }
 
-        const call = streamVideo.video.call("default", meetingId);
-        const realtimeClient = await streamVideo.video.connectOpenAi({
-            call,
-            openAiApiKey: process.env.OPENAI_API_KEY!,
-            agentUserId: existingAgent.id,
-        })
+        try {
+            const call = streamVideo.video.call("default", meetingId);
+            await call.get();
+            const realtimeClient = await streamVideo.video.connectOpenAi({
+                call,
+                openAiApiKey: process.env.OPENAI_API_KEY!,
+                agentUserId: existingAgent.id,
+            })
 
-        realtimeClient.updateSession({
-            instructions: existingAgent.instructions,
-        })
+            await realtimeClient.updateSession({
+                instructions: existingAgent.instructions,
+            })
+        } catch (err) {
+            console.error("connectOpenAi failed", { meetingId, agentId: existingAgent.id, error: err });
+        }
     }else if( eventType === "call.session_participant_left"){
         const event = payload as CallSessionParticipantLeftEvent;
         const meetingId = event.call_cid.split(":")[1];

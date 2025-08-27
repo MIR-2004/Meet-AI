@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const HomeView = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -135,7 +135,7 @@ export const HomeView = () => {
       setCurrentPhrase((prev) => (prev + 1) % heroPhrases.length);
     }, 1800); // 1.8s per phrase
     return () => clearInterval(interval);
-  }, []);
+  }, [heroPhrases.length]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-green-900 text-white overflow-hidden">
@@ -540,7 +540,7 @@ export const HomeView = () => {
                   ))}
                 </div>
                 <p className="text-gray-300 mb-6 italic">
-                  "{testimonial.text}"
+                  &quot;{testimonial.text}&quot;
                 </p>
                 <div>
                   <div className="font-semibold">{testimonial.name}</div>
@@ -580,9 +580,9 @@ interface AnimatedNumberProps {
 const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, suffix = "", duration = 1, delay = 0 }) => {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
-    let start = 0;
+    const start = 0;
     let startTime: number | undefined;
-    let timeout: NodeJS.Timeout;
+    // schedule animation start after an optional delay
     const step = (timestamp: number) => {
       if (startTime === undefined) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
@@ -593,7 +593,7 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, suffix = "", dur
         setDisplay(value);
       }
     };
-    timeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       requestAnimationFrame(step);
     }, delay * 1000);
     return () => clearTimeout(timeout);

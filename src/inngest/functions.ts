@@ -29,19 +29,20 @@ Example:
 #### Next Section
 - Feature X automatically does Y
 - Mention of integration with Z
-  `.trim(), 
-  model: openai({model: "gpt-5", apiKey: process.env.OPENAI_API_KEY})
+  `.trim(),
+  model: openai({ model: "gpt-4o", apiKey: process.env.OPENAI_API_KEY })
 })
 
 export const meetingsProcessing = inngest.createFunction(
-  { id: "meetings/processing" },
-  { event: "meetings/processing" },
+  { id: "meetings/processing"},
+  { event: "meetings/processing"},
   async ({ event, step }) => {
-    const response = await step.fetch(event.data.transcriptUrl);
+    const response = await step.run("fetch-transcript", async () => {
+      return fetch(event.data.transcriptUrl).then((res) => res.text())
+    });
 
     const transcript = await step.run("parse-transcript", async () => {
-      const text = await response.text();
-      return JSONL.parse<StreamTranscriptItem>(text);
+      return JSONL.parse<StreamTranscriptItem>(response);
     });
 
     const transcriptWithSpeakers = await step.run("add-speakers", async () => {
@@ -76,14 +77,14 @@ export const meetingsProcessing = inngest.createFunction(
       })
     })
 
-    const {output} = await summerizer.run("Summerize the following transcript: "+ JSON.stringify(transcriptWithSpeakers))
+    const { output } = await summerizer.run("Summerize the following transcript: " + JSON.stringify(transcriptWithSpeakers))
 
-    await step.run("save-summary", async() => {
+    await step.run("save-summary", async () => {
       await db.update(meetings).set({
         summary: (output[0] as TextMessage).content as string,
         status: "completed",
       })
-      .where(eq(meetings.id, event.data.meetingsId))
+        .where(eq(meetings.id, event.data.meetingId))
     })
   }
 )
