@@ -24,6 +24,60 @@ export const meetingssRouter = createTRPCRouter({
         return token;
     }),
 
+    connectAgent: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ input }) => {
+            const [existingMeeting] = await db
+                .select()
+                .from(meetings)
+                .where(eq(meetings.id, input.id));
+
+            if (!existingMeeting) {
+                throw new TRPCError({ code: "NOT_FOUND", message: "Meeting not found" });
+            }
+
+            const [existingAgent] = await db
+                .select()
+                .from(agents)
+                .where(eq(agents.id, existingMeeting.agentId));
+
+            if (!existingAgent) {
+                throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" });
+            }
+
+            // Ensure meeting is marked active when connecting the agent
+            if (existingMeeting.status !== "active") {
+                await db
+                    .update(meetings)
+                    .set({ status: "active", startedAt: new Date() })
+                    .where(eq(meetings.id, existingMeeting.id));
+            }
+
+            // Ensure agent user exists in Stream
+            await streamVideo.upsertUsers([
+                {
+                    id: existingAgent.id,
+                    name: existingAgent.name,
+                    role: "user",
+                    image: generateAvatarUri({ seed: existingAgent.name, variant: "botttsNeutral" }),
+                },
+            ]);
+
+            const call = streamVideo.video.call("default", existingMeeting.id);
+            await call.get();
+            const realtimeClient = await streamVideo.video.connectOpenAi({
+                call,
+                openAiApiKey: process.env.OPENAI_API_KEY!,
+                agentUserId: existingAgent.id,
+            });
+
+            await realtimeClient.updateSession({
+                instructions: existingAgent.instructions,
+            });
+
+            return { status: "connected" } as const;
+        }),
+
     getTranscript: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
